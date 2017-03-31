@@ -24,11 +24,6 @@ public class MealWithExceed {
 
     @Override
     public String toString() {
-        return "UserMealWithExceed{" +
-                "dateTime=" + dateTime +
-                ", description='" + description + '\'' +
-                ", calories=" + calories +
-                ", exceed=" + exceed +
-                '}';
+        return String.format("%s %s exceed = %s", dateTime.toLocalDate(), description, exceed);
     }
 }
