@@ -7,9 +7,53 @@
 <body>
 <h3>Проект <a href="https://github.com/JavaWebinar/topjava10" target="_blank">Java Enterprise (Topjava)</a></h3>
 <hr>
-<ul>
+<form enctype="multipart/form-data"  method="get">
+    <select required name="ROLES">
+        <option selected value="USER">USER</option>
+        <option value="ADMIN">ADMIN</option>
+    </select>
+    <p><input type="submit"></p>
+
+    <ul>
     <li><a href="users">User List</a></li>
     <li><a href="meals">Meal List</a></li>
+    <li><a href="javascript: goToPage();">Перейти</a></li>
+    <li><a href='javascript: document.location.href = "users";'>Туда</a></li>
+        <script type="text/javascript">
+            /*var x = new XMLHttpRequest();
+            x.getParameter("ROLE");
+            x.open("GET", "/echo/json/", true);
+            x.onload = function (){
+                alert( x.responseText);
+            }
+            x.send(null);*/
+
+            //document.location.href = "http://www.site.ru";
+            function goToPage()
+            {
+                /*var url = document.getElementById("meals.jsp");
+                document.location.href = url.value;*/
+                //document.location.href = "http://www.site.ru";
+                //var cl = Object;
+                var x = new XMLHttpRequest();
+                var age = x.getParameter("ROLE");
+                x.close();
+                x.abort();
+                document.location.href = "meals" + "?r=try";
+            }
+        </script>
+        <script>
+            //Оценка Антона
+            var markAnton=5;
+            //Оценка Максима
+            var markMaxim=4;
+
+            if ((markAnton>=3) && (markMaxim>=3)
+                alert("Антон и максим имеют положительные отметки");
+        </script>
+    <!--<p><input name="login"> <input type="password" name="pass"></p>-->
+    <!--<a href="meals?action=create">Add Meal</a>-->
 </ul>
+</form>
 </body>
 </html>

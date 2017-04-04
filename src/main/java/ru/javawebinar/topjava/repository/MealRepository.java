@@ -1,8 +1,12 @@
 package ru.javawebinar.topjava.repository;
 
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.model.User;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * GKislin
@@ -11,9 +15,12 @@ import java.util.Collection;
 public interface MealRepository {
     Meal save(Meal Meal);
 
-    void delete(int id);
+    boolean delete(int id);
 
     Meal get(int id);
 
     Collection<Meal> getAll();
+
+    List<Meal> getFilteredDateTime(LocalDateTime startDT, LocalDateTime endDT, int userId);
+
 }

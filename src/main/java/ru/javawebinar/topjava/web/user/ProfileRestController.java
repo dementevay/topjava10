@@ -11,7 +11,7 @@ public class ProfileRestController extends AbstractUserController {
         return super.get(AuthorizedUser.id());
     }
 
-    public void delete() {
+    public void delete() { //зачем юзер может удалить себя?
         super.delete(AuthorizedUser.id());
     }
 
