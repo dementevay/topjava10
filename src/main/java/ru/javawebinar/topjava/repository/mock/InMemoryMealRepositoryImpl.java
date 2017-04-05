@@ -1,10 +1,9 @@
 package ru.javawebinar.topjava.repository.mock;
 
-import com.google.common.collect.Ordering;
 import org.springframework.stereotype.Repository;
+import ru.javawebinar.topjava.AuthorizedUser;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.to.MealWithExceed;
 import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 
@@ -37,31 +36,31 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     }
 
     @Override
-    public boolean delete(int id) {
-        return repository.remove(id, repository.getOrDefault(id, null));
-    }
-
-    @Override
-    public Meal get(int id) {
-        return repository.getOrDefault(id, null);
+    public boolean delete(int id, int userId) {
+        if(get(id, userId) != null) return repository.remove(id) != null;
+        else return false;
 
     }
 
     @Override
-    public Collection<Meal> getAll() {
-        List<Meal> list = new ArrayList<>(repository.values());
-        list.sort(DATE_ORDERING);
-        return Collections.synchronizedCollection(list);
+    public Meal get(int id, int userId) {
+        if(repository.get(id).getUserId() == userId) return repository.get(id);
+        else return null;
     }
 
-    private static Ordering<Meal> DATE_ORDERING =
-              Ordering.natural().reverse().onResultOf(Meal::getDateTime);
+    @Override
+    public Collection<Meal> getAll(int userId) {
+        List<Meal> list = repository.values().stream().filter(meal -> meal.getUserId() == userId).collect(Collectors.toList());
+        Comparator<Meal> DATE = (o1, o2) -> o2.getDateTime().compareTo(o1.getDateTime());
+        list.sort(DATE);
+        return list;
+    }
 
-    public  List<Meal> getFilteredDateTime(LocalDateTime startDT, LocalDateTime endDT, int userId) {
-        return getAll().stream()
+    @Override
+    public  List<Meal> getFilteredDate (LocalDateTime startDT, LocalDateTime endDT, int userId) {
+        return getAll(userId).stream()
                 .filter(m -> m.getUserId() == userId)
                 .filter(meal -> DateTimeUtil.isBetweenDate(meal.getDateTime().toLocalDate(), startDT.toLocalDate(), endDT.toLocalDate()))
-                .filter(meal -> DateTimeUtil.isBetween(meal.getDateTime().toLocalTime(), startDT.toLocalTime(), endDT.toLocalTime()))
                 .collect(Collectors.toList());
     }
 }

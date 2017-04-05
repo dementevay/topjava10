@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Objects;
@@ -78,6 +79,7 @@ public class MealServlet extends HttpServlet {
             default:
                 LOG.info("getAll");
                 request.setAttribute("meals", mealRestController.getAll());
+                //request.setAttribute("meals", mealRestController.getWithFilter(LocalDateTime.of(2015, Month.MAY, 30, 18, 0),LocalDateTime.of(2015, Month.MAY, 30, 23, 0)));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
