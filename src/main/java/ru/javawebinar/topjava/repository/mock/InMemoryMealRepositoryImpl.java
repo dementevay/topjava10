@@ -23,15 +23,17 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     private AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.MEALS.forEach(this::save);
+        MealsUtil.MEALS.forEach(meal -> save(meal, AuthorizedUser.id()));
     }
 
     @Override
-    public Meal save(Meal meal) {
-        if (meal.isNew()) {
-            meal.setId(counter.incrementAndGet());
+    public Meal save(Meal meal, int userId) {
+        if (userId == meal.getUserId()){
+            if (meal.isNew()){
+                meal.setId(counter.incrementAndGet());
+            }
+            repository.put(meal.getId(), meal);
         }
-        repository.put(meal.getId(), meal);
         return meal;
     }
 
@@ -50,17 +52,18 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public Collection<Meal> getAll(int userId) {
-        List<Meal> list = repository.values().stream().filter(meal -> meal.getUserId() == userId).collect(Collectors.toList());
-        Comparator<Meal> DATE = (o1, o2) -> o2.getDateTime().compareTo(o1.getDateTime());
-        list.sort(DATE);
+        List<Meal> list = repository.values().stream()
+                .filter(meal -> meal.getUserId() == userId)
+                .sorted((o1, o2) -> o2.getDateTime().compareTo(o1.getDateTime()))
+                .collect(Collectors.toList());
         return list;
     }
 
     @Override
     public  List<Meal> getFilteredDate (LocalDateTime startDT, LocalDateTime endDT, int userId) {
         return getAll(userId).stream()
-                .filter(m -> m.getUserId() == userId)
                 .filter(meal -> DateTimeUtil.isBetweenDate(meal.getDateTime().toLocalDate(), startDT.toLocalDate(), endDT.toLocalDate()))
+                .sorted((o1, o2) -> o2.getDateTime().compareTo(o1.getDateTime()))
                 .collect(Collectors.toList());
     }
 }

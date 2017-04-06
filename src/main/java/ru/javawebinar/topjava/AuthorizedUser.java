@@ -1,7 +1,10 @@
 package ru.javawebinar.topjava;
 
+import org.springframework.stereotype.Controller;
+
 import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 
+@Controller
 public class AuthorizedUser {
 
     static int id = 1;

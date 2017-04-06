@@ -89,12 +89,12 @@
             <version>1.2</version>
         </dependency>
 
-        <!--Guava 21-->
+        <!--&lt;!&ndash;Guava 21&ndash;&gt;
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>21.0</version>
-        </dependency>
+        </dependency>-->
     </dependencies>
 
     <profiles>

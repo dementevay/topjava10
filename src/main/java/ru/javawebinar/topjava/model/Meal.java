@@ -13,7 +13,7 @@ import java.time.LocalTime;
  */
 public class Meal extends BaseEntity {
 
-    private final Integer userId;
+    private final int userId;
 
     private final LocalDateTime dateTime;
 
@@ -25,7 +25,7 @@ public class Meal extends BaseEntity {
         this(null, userId, dateTime, description, calories);
     }
 
-    public Meal(Integer id, Integer userId, LocalDateTime dateTime, String description, int calories) {
+    public Meal(Integer id, int userId, LocalDateTime dateTime, String description, int calories) {
         this.id = id;
         this.dateTime = dateTime;
         this.description = description;

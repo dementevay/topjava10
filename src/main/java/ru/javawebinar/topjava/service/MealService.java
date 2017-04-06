@@ -11,12 +11,12 @@ public interface MealService {
 
     Collection<Meal> getAll(int userId);
 
-    boolean delete(int id, int userId);
+    void delete(int id, int userId);
 
     //return Meal or null
     Meal get(int id, int userId);
 
-    Meal save(Meal meal);
+    Meal save(Meal meal, int userId);
 
     List<MealWithExceed> getWithFilter(LocalDateTime startDT, LocalDateTime endDT, int userId, int calories);
 

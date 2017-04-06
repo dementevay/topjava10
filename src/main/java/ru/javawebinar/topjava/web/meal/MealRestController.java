@@ -30,7 +30,7 @@ public class MealRestController {
     }
 
     public Meal save(Meal meal) {
-        return service.save(meal);
+        return service.save(meal, AuthorizedUser.id());
     }
 
     public List<MealWithExceed> getWithFilter(LocalDateTime startDT, LocalDateTime endDT) {
