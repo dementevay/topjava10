@@ -10,14 +10,12 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.DbPopulator;
 
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Repository
 public class JdbcMealRepositoryImpl implements MealRepository {
@@ -29,11 +27,12 @@ public class JdbcMealRepositoryImpl implements MealRepository {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private final SimpleJdbcInsert insertMeal;
+    private final DbPopulator dbPopulator;
 
     @Autowired
-    public JdbcMealRepositoryImpl(DataSource dataSource, JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        DbPopulator dbPopulator = new DbPopulator("db/populateDB.sql", dataSource);
-        dbPopulator.execute();
+    public JdbcMealRepositoryImpl(DataSource dataSource, JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate, DbPopulator dbPopulator) {
+        this.dbPopulator = dbPopulator;
+        this.dbPopulator.execute();
 
         this.insertMeal = new SimpleJdbcInsert(dataSource)
                 .withTableName("meals")
@@ -57,10 +56,10 @@ public class JdbcMealRepositoryImpl implements MealRepository {
             Number newKey = insertMeal.executeAndReturnKey(map);
             meal.setId(newKey.intValue());
 
-        } else if (get(meal.getId(), userId) != null) {
+        } else {
             namedParameterJdbcTemplate.update(
-                    "UPDATE meals SET user_id=:userId, datetime=:dateTime, description=:description, calories=:calories WHERE id=:id",  map);
-        } else return null;
+                    "UPDATE meals SET user_id=:userId, datetime=:dateTime, description=:description, calories=:calories WHERE id=:id AND user_id=:userId",  map);
+        }
         return meal;
     }
 
@@ -85,9 +84,7 @@ public class JdbcMealRepositoryImpl implements MealRepository {
     public List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
         Objects.requireNonNull(startDate);
         Objects.requireNonNull(endDate);
-        return getAll(userId).stream()
-                .filter(m -> DateTimeUtil.isBetween(m.getDateTime(), startDate, endDate))
-                .collect(Collectors.toList());
+        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id=? AND (datetime BETWEEN ? AND ?) ORDER BY datetime DESC", new Object[]{userId, startDate, endDate}, ROW_MAPPER);
     }
 
 }
