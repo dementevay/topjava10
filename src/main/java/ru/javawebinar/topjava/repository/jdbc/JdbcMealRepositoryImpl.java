@@ -56,9 +56,9 @@ public class JdbcMealRepositoryImpl implements MealRepository {
             Number newKey = insertMeal.executeAndReturnKey(map);
             meal.setId(newKey.intValue());
 
-        } else {
-            namedParameterJdbcTemplate.update(
-                    "UPDATE meals SET user_id=:userId, datetime=:dateTime, description=:description, calories=:calories WHERE id=:id AND user_id=:userId",  map);
+        } else if (namedParameterJdbcTemplate.update(
+                "UPDATE meals SET user_id=:userId, datetime=:dateTime, description=:description, calories=:calories WHERE id=:id AND user_id=:userId",  map) == 0){
+            return null;
         }
         return meal;
     }
@@ -70,13 +70,13 @@ public class JdbcMealRepositoryImpl implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-        List<Meal> meals = jdbcTemplate.query("SELECT * FROM meals WHERE id=? AND user_id=?", ROW_MAPPER, id, userId);
+        List<Meal> meals = jdbcTemplate.query("SELECT * FROM meals WHERE id=? AND user_id=?", new Object[]{userId}, ROW_MAPPER);
         return DataAccessUtils.singleResult(meals);
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id=? ORDER BY datetime DESC", ROW_MAPPER, userId);
+        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id=? ORDER BY datetime DESC", new Object[]{userId}, ROW_MAPPER);
 
     }
 
