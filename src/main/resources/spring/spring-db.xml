@@ -27,9 +27,4 @@
     <bean id="namedJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
         <constructor-arg ref="dataSource"/>
     </bean>
-
-    <bean id="dbPopulator" class="ru.javawebinar.topjava.util.DbPopulator">
-        <constructor-arg index="0" value="db/populateDB.sql"/>
-        <constructor-arg index="1" ref="dataSource"/>
-    </bean>
 </beans>
