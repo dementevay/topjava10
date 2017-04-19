@@ -24,8 +24,8 @@ public class JpaMealRepositoryImpl implements MealRepository {
     @Transactional
     public Meal save(Meal meal, int userId) {
         if (meal.isNew()) {
-            List<User> users = em.createNamedQuery(Meal.USER_ID).setParameter("userId", userId).getResultList();
-            meal.setUser(DataAccessUtils.singleResult(users));
+            User ref = em.getReference(User.class, userId);
+            meal.setUser(ref);
             em.persist(meal);
             return meal;
         } else {
@@ -36,6 +36,10 @@ public class JpaMealRepositoryImpl implements MealRepository {
             query.setParameter("id", meal.getId());
             query.setParameter("userId", userId);
             return query.executeUpdate() != 0 ? meal : null;
+            /*//с методом merge не могу проверить еду на принадлежность к юзеру
+            User ref = em.getReference(User.class, userId);
+            meal.setUser(ref);
+            return em.merge(meal);*/
         }
     }
 
@@ -54,6 +58,7 @@ public class JpaMealRepositoryImpl implements MealRepository {
         query.setParameter("id", id);
         query.setParameter("userId", userId);
         List<Meal> meals = query.getResultList();
+        //em.find(Meal.class, id);//и опять нулевой юзер не даёт мне проверить хозяина еды
         return DataAccessUtils.singleResult(meals);
     }
 

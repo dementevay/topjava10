@@ -1,9 +1,10 @@
 package ru.javawebinar.topjava.model;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -18,13 +19,11 @@ import java.time.LocalTime;
         @NamedQuery(name = Meal.GET_ALL, query = "SELECT m FROM Meal m WHERE m.user.id=:userId ORDER BY m.dateTime DESC"),
         @NamedQuery(name = Meal.BETWEEN, query = "SELECT m FROM Meal m WHERE m.user.id=:userId AND m.dateTime BETWEEN :startDate AND :endDate ORDER BY m.dateTime DESC "),
         @NamedQuery(name = Meal.UPDATE, query = "UPDATE Meal m SET m.description=:description, m.calories=:calories, m.dateTime=:dateTime WHERE m.id=:id AND m.user.id=:userId"),
-        @NamedQuery(name = Meal.USER_ID, query = "SELECT u FROM User u WHERE u.id=:userId"),
 })
 @Entity
 @Table(name = "meals", uniqueConstraints = {@UniqueConstraint(columnNames = {"date_time", "user_id"})})
 public class Meal extends BaseEntity {
 
-    public static final String USER_ID = "Meal.add";
     public static final String UPDATE = "Meal.update";
     public static final String DELETE = "Meal.delete";
     public static final String GET = "Meal.get";
@@ -32,13 +31,15 @@ public class Meal extends BaseEntity {
     public static final String BETWEEN = "Meal.between";
 
     @Column(name = "date_time", nullable = false)
-    @DateTimeFormat
+    @NotBlank(groups = LocalDateTime.class, message = "Date must be no empty")
     private LocalDateTime dateTime;
 
     @Column(name = "description", nullable = false)
+    @NotNull
     private String description;
 
     @Column(name = "calories", nullable = false)
+    @NotBlank(groups = Integer.class, message = "Date must be no empty")
     @Range(min = 10, max = 10000, message = "CALORIES in Meal must be min = 10 max = 10000")
     private int calories;
 
