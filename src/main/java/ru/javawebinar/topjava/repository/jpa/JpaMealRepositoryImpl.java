@@ -10,6 +10,7 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,23 +24,16 @@ public class JpaMealRepositoryImpl implements MealRepository {
     @Override
     @Transactional
     public Meal save(Meal meal, int userId) {
+        User ref = em.getReference(User.class, userId);
+
         if (meal.isNew()) {
-            User ref = em.getReference(User.class, userId);
             meal.setUser(ref);
             em.persist(meal);
             return meal;
         } else {
-            Query query = em.createNamedQuery(Meal.UPDATE);
-            query.setParameter("description", meal.getDescription());
-            query.setParameter("calories",meal.getCalories());
-            query.setParameter("dateTime", meal.getDateTime());
-            query.setParameter("id", meal.getId());
-            query.setParameter("userId", userId);
-            return query.executeUpdate() != 0 ? meal : null;
-            /*//с методом merge не могу проверить еду на принадлежность к юзеру
-            User ref = em.getReference(User.class, userId);
             meal.setUser(ref);
-            return em.merge(meal);*/
+            Meal meal1 = get(meal.getId(), userId);
+            return meal1 != null ? em.merge(meal) : null;
         }
     }
 
@@ -54,12 +48,8 @@ public class JpaMealRepositoryImpl implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-        Query query =  em.createNamedQuery(Meal.GET,Meal.class);
-        query.setParameter("id", id);
-        query.setParameter("userId", userId);
-        List<Meal> meals = query.getResultList();
-        //em.find(Meal.class, id);//и опять нулевой юзер не даёт мне проверить хозяина еды
-        return DataAccessUtils.singleResult(meals);
+        Meal meal = em.find(Meal.class, id);
+        return userId == meal.getUser().getId() ?  meal : null;
     }
 
     @Override
@@ -69,7 +59,7 @@ public class JpaMealRepositoryImpl implements MealRepository {
 
     @Override
     public List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
-        Query query = em.createNamedQuery(Meal.BETWEEN);
+        TypedQuery<Meal> query = em.createNamedQuery(Meal.BETWEEN, Meal.class);
         query.setParameter("userId", userId);
         query.setParameter("startDate", startDate);
         query.setParameter("endDate", endDate);
