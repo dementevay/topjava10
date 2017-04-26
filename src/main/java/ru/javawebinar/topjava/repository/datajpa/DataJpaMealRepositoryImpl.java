@@ -53,4 +53,7 @@ public class DataJpaMealRepositoryImpl implements MealRepository {
                     .setParameter("endDate", endDate).getResultList();
         }
 
+    public Meal getWithUser (int id, int userId) {
+        return crudRepository.getWithUser(id, userId);
+    }
 }

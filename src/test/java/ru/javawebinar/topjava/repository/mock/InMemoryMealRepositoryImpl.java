@@ -77,5 +77,9 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
         return meals == null ?
                 Stream.empty() : meals.values().stream().sorted(Comparator.comparing(Meal::getDateTime).reversed());
     }
+
+    public Meal getWithUser (int id, int userId) {
+        throw new UnsupportedOperationException();
+    }
 }
 
