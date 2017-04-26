@@ -7,6 +7,6 @@ import ru.javawebinar.topjava.service.MealServiceTest;
 /**
  * Created by andrejdementev on 25.04.17.
  */
-@ActiveProfiles({Profiles.ACTIVE_DB, "datajpa"})
+@ActiveProfiles({Profiles.ACTIVE_DB, "datajpa", "jpa,datajpa"})
 public class DataJPAMealServiceTest extends MealServiceTest {
 }

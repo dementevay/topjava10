@@ -13,8 +13,9 @@ public class Profiles {
 
     public static final String
             JDBC = "jdbc",
+            JPA_DTAJPA = "jpa,datajpa",
             JPA = "jpa",
             DATAJPA = "datajpa";
 
-    public static final String REPOSITORY_IMPLEMENTATION = JPA;
+    public static final String REPOSITORY_IMPLEMENTATION = DATAJPA;
 }
