@@ -3,11 +3,8 @@ package ru.javawebinar.topjava.repository.datajpa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,16 +14,18 @@ public class DataJpaMealRepositoryImpl implements MealRepository {
     @Autowired
     private CrudMealRepository crudRepository;
 
-    @PersistenceContext
-    private EntityManager em;
+    @Autowired
+    private CrudUserRepository userCrudRepository;
 
     @Override
     public Meal save(Meal meal, int userId) {
-        if (!meal.isNew() && get(meal.getId(), userId) == null) {
-            return null;
+        if (meal.isNew()) {
+            meal.setUser(userCrudRepository.getOne(userId));
+            return crudRepository.save(meal);
+        } else {
+            return crudRepository.update(meal.getDateTime(), meal.getCalories(), meal.getDescription(), meal.getId(), userId) != 0
+                    ? meal:null;
         }
-        meal.setUser(em.getReference(User.class, userId));
-        return crudRepository.save(meal);
     }
 
     @Override
@@ -47,11 +46,8 @@ public class DataJpaMealRepositoryImpl implements MealRepository {
 
     @Override
     public List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
-            return em.createNamedQuery(Meal.GET_BETWEEN, Meal.class)
-                    .setParameter("userId", userId)
-                    .setParameter("startDate", startDate)
-                    .setParameter("endDate", endDate).getResultList();
-        }
+        return crudRepository.getBetween(startDate, endDate, userId);
+    }
 
     public Meal getWithUser (int id, int userId) {
         return crudRepository.getWithUser(id, userId);
