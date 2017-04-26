@@ -23,14 +23,8 @@ import java.util.Collections;
 import static ru.javawebinar.topjava.UserTestData.*;
 import static ru.javawebinar.topjava.MealTestData.*;
 
-@ContextConfiguration({
-        "classpath:spring/spring-app.xml",
-        "classpath:spring/spring-db.xml"
-})
-@RunWith(SpringRunner.class)
-@Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-@ActiveProfiles(Profiles.ACTIVE_DB)
-public abstract class UserServiceTest {
+
+public abstract class UserServiceTest extends BasePropertiesForTest {
 
     static {
         // Only for postgres driver logging
