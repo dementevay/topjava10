@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import static ru.javawebinar.topjava.UserTestData.*;
+import static ru.javawebinar.topjava.MealTestData.*;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
@@ -70,6 +71,20 @@ public abstract class UserServiceTest {
     public void testGet() throws Exception {
         User user = service.get(USER_ID);
         USER_MATCHER.assertEquals(USER, user);
+    }
+
+    @Test
+    public void testGetUserWithMeals() throws Exception {
+        User user = service.getUserWithMeals(USER_ID);
+        USER_MATCHER.assertEquals(USER, user);
+        MATCHER.assertCollectionEquals(MEALS, user.getMeals());
+    }
+
+    @Test
+    public void testGetUserWithMealsNoMeals() throws Exception {
+        User user = service.getUserWithMeals(USER_ID);
+        USER_MATCHER.assertEquals(USER, user);
+        MATCHER.assertCollectionEquals(MEALS, user.getMeals());
     }
 
     @Test(expected = NotFoundException.class)

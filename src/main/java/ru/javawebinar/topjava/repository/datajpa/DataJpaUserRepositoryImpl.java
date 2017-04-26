@@ -15,6 +15,9 @@ public class DataJpaUserRepositoryImpl implements UserRepository {
     @Autowired
     private CrudUserRepository crudRepository;
 
+    @Autowired
+    private CrudMealRepository crudMealRepository;
+
     @Override
     public User save(User user) {
         return crudRepository.save(user);
@@ -38,5 +41,12 @@ public class DataJpaUserRepositoryImpl implements UserRepository {
     @Override
     public List<User> getAll() {
         return crudRepository.findAll(SORT_NAME_EMAIL);
+    }
+
+    @Override
+    public User getUserWithMeals (int id) {
+        User user = get(id);
+        user.setMeals(crudMealRepository.findAllByUserIdOrderByDateTimeDesc(id));
+        return user;
     }
 }
