@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <html>
 <head>
@@ -9,14 +10,14 @@
 </head>
 <body>
 <section>
-    <h2><a href="index.html">Home</a></h2>
+    <h2><a href="index.html"><spring:message code="app.home"/></a></h2>
     <h2>${param.action == 'create' ? 'Create meal' : 'Edit meal'}</h2>
     <hr>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
     <form method="post" action="meals">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>
-            <dt>DateTime:</dt>
+            <dt><spring:message code="meal.dateTime"/>:</dt>
             <dd><input type="datetime-local" value="${meal.dateTime}" name="dateTime"></dd>
         </dl>
         <dl>
