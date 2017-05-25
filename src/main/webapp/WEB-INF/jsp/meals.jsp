@@ -54,8 +54,7 @@
                     </thead>
                     <c:forEach items="${meals}" var="meal">
                         <jsp:useBean id="meal" scope="page" type="ru.javawebinar.topjava.to.MealWithExceed"/>
-                        <tr class="${meal.exceed ? 'exceeded' : 'normal'}" iii="${meal.id}">
-                            <%--<tr iii="${meal.id}">--%>
+                        <tr class="${meal.exceed ? 'exceeded' : 'normal'}" id="${meal.id}">
                             <td>
                                     <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
                                     <%--<%=TimeUtil.toString(meal.getDateTime())%>--%>
@@ -63,13 +62,12 @@
                             </td>
                             <td>${meal.description}</td>
                             <td>${meal.calories}</td>
-<%----%>
                             <td><a class="btn btn-xs btn-primary" >
                                 <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
                             </a></td>
                             <td><a class="btn btn-xs btn-danger delete" >
                                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                            </a></td><%--</tr>--%>
+                            </a></td>
 
                         </tr>
                     </c:forEach>

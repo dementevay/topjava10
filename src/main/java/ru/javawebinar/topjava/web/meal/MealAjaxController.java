@@ -9,7 +9,6 @@ import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealWithExceed;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -38,12 +37,10 @@ public class MealAjaxController extends AbstractMealController {
 
     @PostMapping
     public void createOrUpdate(@RequestParam("id") Integer id,
-                               @RequestParam("dateTime") String stringDateTime,
+                               @RequestParam("dateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                                       LocalDateTime dateTime,
                                @RequestParam("description") String description,
                                @RequestParam("calories") int calories) {
-
-        LocalDateTime dateTime = LocalDateTime.parse(stringDateTime, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-
         Meal meal = new Meal(id, dateTime, description, calories);
         if (meal.isNew()) {
             super.create(meal);
